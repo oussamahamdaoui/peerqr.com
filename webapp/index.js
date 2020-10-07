@@ -29,7 +29,7 @@ const App = () => {
     path: '/api',
     port: window.location.port,
     host: window.location.hostname,
-    secure: false,
+    secure: true,
     config: { iceServers: [{ urls: 'stun:stun.l.google.com:19302' }], sdpSemantics: 'unified-plan' },
   });
 
