@@ -14,6 +14,7 @@ const peerServer = ExpressPeerServer(server, {
   allow_discovery: false,
   proxied: true,
   debug: false,
+  port: 8066,
 });
 
 app.use(express.static(STATIC_DIR));
