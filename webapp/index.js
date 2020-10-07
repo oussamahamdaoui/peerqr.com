@@ -27,7 +27,7 @@ const App = () => {
   const eventManager = new EventManager();
   const peer = new Peer(undefined, {
     path: '/api',
-    port: 3000,
+    port: window.location.port,
     host: window.location.hostname,
     secure: false,
     config: { iceServers: [{ urls: 'stun:stun.l.google.com:19302' }], sdpSemantics: 'unified-plan' },
