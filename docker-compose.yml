@@ -1,0 +1,7 @@
+version: '3.1'
+services:
+  web:
+        build: .
+        ports:
+          - "8066:8066"
+        restart: always
