@@ -6,8 +6,9 @@ const CopyInput = require('./components/CopyInput');
 const DropFile = require('./components/DropFile');
 const FileElement = require('./components/FileElement');
 const Qrcode = require('./components/QrCode');
+const Alert = require('./components/Alert');
 
-const handleData = async (data, target) => {
+const handleData = async (data, target, conn) => {
   if (data.arrayBuffer instanceof ArrayBuffer) {
     let mime;
     try {
@@ -20,6 +21,9 @@ const handleData = async (data, target) => {
       mimeType: mime,
       name: data.name,
     }));
+    conn.send(`File: ${data.name} received`);
+  } else if (typeof data === 'string') {
+    Alert({ message: data });
   }
 };
 
@@ -80,7 +84,10 @@ const App = () => {
             name: file.name,
           });
         });
-        conn.on('data', (data) => handleData(data, receivedFilesElem));
+        conn.on('data', (data) => handleData(data, receivedFilesElem, conn));
+        conn.on('close', () => {
+          setConnected(false);
+        });
       });
     }
 
@@ -92,7 +99,11 @@ const App = () => {
           name: file.name,
         });
       });
-      conn.on('data', (data) => handleData(data, receivedFilesElem));
+      conn.on('data', (data) => handleData(data, receivedFilesElem, conn));
+
+      conn.on('close', () => {
+        setConnected(false);
+      });
     });
   });
 
