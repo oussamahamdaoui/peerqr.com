@@ -12,7 +12,7 @@ const { ExpressPeerServer } = require('peer');
 const peerServer = ExpressPeerServer(server, {
   path: '/api',
   allow_discovery: false,
-  proxied: true,
+  proxied: process.env.NODE_ENV === 'production',
   debug: false,
   port: 8066,
 });

@@ -25,6 +25,16 @@ const CopyInput = (text) => {
     document.execCommand('copy');
   });
 
+  DomElement.addEventListener('mousedown', () => {
+    DomElement.classList.add('mouse-down');
+  });
+
+  DomElement.addEventListener('mouseup', () => {
+    setTimeout(() => {
+      DomElement.classList.remove('mouse-down');
+    }, 200);
+  });
+
   DomElement.setValue = (v) => {
     $('.value', DomElement).value = v;
   };

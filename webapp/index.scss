@@ -32,6 +32,24 @@
   cursor: pointer;
   width: 100%;
   max-width: 300px;
+  transition: background-color 200ms linear;
+
+  &::-moz-selection {
+    background: transparent;
+  }
+
+  &::selection {
+    background: transparent;
+  }
+
+  &.mouse-down{
+    background-color: black;
+    color: white;
+    .value{
+      background-color: black;
+      color: white;
+    }
+  };
 
   .value {
     padding: 13px;
@@ -41,6 +59,7 @@
     width: 100%;
     font-size: 0.8em;
     cursor: pointer;
+    transition: background-color 200ms linear;
     &::selection {
       background-color: transparent;
     }
@@ -104,6 +123,12 @@
   align-items: center;
   transition: background-color 200ms linear;
   cursor: pointer;
+
+  input{
+    opacity: 0;
+    width: 1px;
+    height: 1px;
+  }
 
   &:hover {
     background-color: rgba($color: #000000, $alpha: 0.03);

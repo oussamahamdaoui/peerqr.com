@@ -6,10 +6,9 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "watch-back": "nodemon index.js",
-    "watch-front": "watchify webapp/index.js -o static/index.js",
+    "watch-front": "watchify webapp/index.js -o static/index.js -t [ envify --NODE_ENV development ]",
     "watch-css": "sass --watch webapp/.:static/",
-
-    "build-front": "browserify webapp/index.js -o static/index.js -p tinyify",
+    "build-front": "browserify webapp/index.js -o static/index.js -p tinyify -t [ envify --NODE_ENV production ]",
     "build-css": "sass webapp/.:static/ --style compressed",
     "watch": "concurrently \"npm:watch-*\"",
     "build": "concurrently \"npm:build-*\"",
@@ -24,20 +23,21 @@
   },
   "devDependencies": {
     "@forgjs/noframework": "^2.0.2",
-    "concurrently": "^5.3.0",
-    "peerjs": "^1.3.1",
-    "qrcode-generator": "^1.4.4",
-    "mime-types": "^2.1.27",
-    "file-type": "^15.0.1",
-    "lottie-web": "^5.7.3",
-    "feather-icons": "^4.28.0",
     "@vercel/ncc": "^0.24.1",
+    "concurrently": "^5.3.0",
+    "envify": "^4.1.0",
     "eslint": "^7.10.0",
     "eslint-config-airbnb-base": "^14.2.0",
     "eslint-plugin-import": "^2.22.1",
+    "feather-icons": "^4.28.0",
+    "file-type": "^15.0.1",
+    "lottie-web": "^5.7.3",
+    "mime-types": "^2.1.27",
     "nodemon": "^2.0.4",
+    "peerjs": "^1.3.1",
+    "qrcode-generator": "^1.4.4",
+    "sass": "^1.26.11",
     "tinyify": "^3.0.0",
-    "watchify": "^3.11.1",
-    "sass": "^1.26.11"
+    "watchify": "^3.11.1"
   }
 }
