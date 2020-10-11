@@ -73,7 +73,7 @@ const Messager = (eventManager) => {
   $('button', DomElement).addEventListener('click', () => {
     if ($('textarea', DomElement).value.trim() === '') return;
     eventManager.emit('send-message', {
-      message: $('textarea', DomElement).value,
+      message: $('textarea', DomElement).innerHTML.replace(EMOJI_REGEX, emojiUnicode),
     });
     $('textarea', DomElement).value = '';
   });
