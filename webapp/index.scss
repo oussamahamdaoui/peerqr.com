@@ -72,6 +72,9 @@
     color: white;
     outline: none;
     cursor: pointer;
+    &:focus {
+      border: none;
+    }
     .animated-icon {
       width: 26px;
       height: 26px;
