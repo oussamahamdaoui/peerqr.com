@@ -1,6 +1,8 @@
 const { html, $, EventManager } = require('@forgjs/noframework');
 
-(function () { // fixes safari issues
+// fixes safari issues
+
+(function () {
   // eslint-disable-next-line no-use-before-define
   File.prototype.arrayBuffer = File.prototype.arrayBuffer || myArrayBuffer;
   // eslint-disable-next-line no-use-before-define
