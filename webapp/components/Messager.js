@@ -29,7 +29,7 @@ const Message = ({ message = '', from = 'me' } = {}) => {
 
   const DomElement = html`<div class="message ${from} ${big ? 'big' : ''}">
     <div class="time">${Icon('clock')}<span>${timeAgo.format(at)}</span></div>
-    <div class="data">${escape(m)}</div>
+    <div class="data">${m}</div>
   </div>`;
   const time = $('.time>span', DomElement);
 
@@ -73,7 +73,7 @@ const Messager = (eventManager) => {
   $('button', DomElement).addEventListener('click', () => {
     if ($('textarea', DomElement).value.trim() === '') return;
     eventManager.emit('send-message', {
-      message: $('textarea', DomElement).innerHTML.replace(EMOJI_REGEX, emojiUnicode),
+      message: $('textarea', DomElement).value.replace(EMOJI_REGEX, emojiUnicode),
     });
     $('textarea', DomElement).value = '';
   });
