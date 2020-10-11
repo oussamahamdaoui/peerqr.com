@@ -1,4 +1,23 @@
 const { html, $, EventManager } = require('@forgjs/noframework');
+
+(function () { // fixes safari issues
+  // eslint-disable-next-line no-use-before-define
+  File.prototype.arrayBuffer = File.prototype.arrayBuffer || myArrayBuffer;
+  // eslint-disable-next-line no-use-before-define
+  Blob.prototype.arrayBuffer = Blob.prototype.arrayBuffer || myArrayBuffer;
+
+  function myArrayBuffer() {
+    // this: File or Blob
+    return new Promise((resolve) => {
+      const fr = new FileReader();
+      fr.onload = () => {
+        resolve(fr.result);
+      };
+      fr.readAsArrayBuffer(this);
+    });
+  }
+}());
+
 const FileType = require('file-type');
 const mimeTypes = require('mime-types');
 

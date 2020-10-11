@@ -57,6 +57,7 @@ const Messager = (eventManager) => {
   `;
 
   const messages = $('.messages', DomElement);
+  let isTypingTimeOut = null;
 
   $('textarea', DomElement).addEventListener('keypress', (e) => {
     if (e.key === 'Enter' && $('textarea', DomElement).value.trim() !== '') {
@@ -67,7 +68,14 @@ const Messager = (eventManager) => {
         message,
       });
       $('textarea', DomElement).value = '';
+      return;
     }
+    if (isTypingTimeOut) {
+      clearTimeout(isTypingTimeOut);
+    }
+    isTypingTimeOut = setTimeout(() => {
+      eventManager.emit('im-typing');
+    }, 1000);
   });
 
   $('button', DomElement).addEventListener('click', () => {
