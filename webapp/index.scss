@@ -213,7 +213,10 @@ h2 {
   .info {
     flex: 1;
     max-width: 500px;
-    margin-right: 1em;
+    margin-right: 5em;
+    p{
+      color:#7F8285;
+    }
   }
   .card {
     .copy-input {
