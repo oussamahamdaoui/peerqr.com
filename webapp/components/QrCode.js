@@ -1,20 +1,24 @@
 const qrcode = require('qrcode-generator');
-const { html, emptyElement } = require('@forgjs/noframework');
-const AnimatedQrCode = require('./AnimatedQrCode');
+const { html } = require('@forgjs/noframework');
 
-const Qrcode = (url) => {
+const Qrcode = () => {
   const DomElement = html`<div class="qrcode">
     </div>`;
+  let SvgElement = null;
 
   DomElement.setValue = (v) => {
-    emptyElement(DomElement);
     const qr = qrcode(0, 'H');
     qr.addData(v);
     qr.make();
-    DomElement.appendChild(AnimatedQrCode());
-    DomElement.appendChild(html`${qr.createSvgTag()}`);
+    const newSvgElement = html`${qr.createSvgTag()}`;
+    if (SvgElement == null) {
+      DomElement.appendChild(newSvgElement);
+      SvgElement = newSvgElement;
+    } else {
+      DomElement.replaceChild(newSvgElement, SvgElement);
+      SvgElement = newSvgElement;
+    }
   };
-  DomElement.setValue(url);
 
   return DomElement;
 };

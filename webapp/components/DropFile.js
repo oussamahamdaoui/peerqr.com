@@ -44,9 +44,10 @@ const DropFile = (eventManager) => {
     loop: false,
   });
   const DomElement = html`
-  <div class="drop-file">
+  <div class="drop-file" tabindex="0">
     ${icon}
-    <h2>Drag & drop files here</h2>
+    <h2>You can drop files here</h2>
+    <button>Got it</button>
     <input type="file" multiple="true" />
   </div>`;
 
@@ -75,12 +76,34 @@ const DropFile = (eventManager) => {
   DomElement.addEventListener('dragover', dragOverHandler);
 
   DomElement.addEventListener('click', () => {
-    inputElem.click();
+    if (DomElement.classList.contains('close')) {
+      inputElem.click();
+    } else {
+      DomElement.classList.add('close');
+      eventManager.emit('to-mesages', true);
+    }
+  });
+
+  DomElement.addEventListener('keypress', (e) => {
+    if (!e.key === 'enter' || document.activeElement !== DomElement) return;
+    if (DomElement.classList.contains('close')) {
+      inputElem.click();
+    } else {
+      eventManager.emit('to-mesages', true);
+      DomElement.classList.add('close');
+    }
   });
 
   inputElem.addEventListener('change', (e) => {
     e.preventDefault();
     dropHandler(inputElem, eventManager);
+  });
+
+  $('button', DomElement).addEventListener('click', (e) => {
+    e.stopPropagation();
+    e.preventDefault();
+    DomElement.classList.add('close');
+    eventManager.emit('to-mesages', true);
   });
 
   return DomElement;

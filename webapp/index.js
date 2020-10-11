@@ -4,11 +4,10 @@ const mimeTypes = require('mime-types');
 
 const CopyInput = require('./components/CopyInput');
 const DropFile = require('./components/DropFile');
-const FileElement = require('./components/FileElement');
 const Qrcode = require('./components/QrCode');
-const Alert = require('./components/Alert');
+const Messager = require('./components/Messager');
 
-const handleData = async (data, target, conn) => {
+const handleData = async (data, eventManager) => {
   if (data.arrayBuffer instanceof ArrayBuffer) {
     let mime;
     try {
@@ -16,14 +15,13 @@ const handleData = async (data, target, conn) => {
     } catch (e) {
       mime = mimeTypes.lookup(data.name);
     }
-    target.appendChild(await FileElement({
+    eventManager.emit('file-received', {
       arrayBuffer: data.arrayBuffer,
       mimeType: mime,
       name: data.name,
-    }));
-    conn.send(`File: ${data.name} received`);
-  } else if (typeof data === 'string') {
-    Alert({ message: data });
+    });
+  } else if (typeof data !== 'string') {
+    eventManager.emit('message-received', data);
   }
 };
 
@@ -39,23 +37,29 @@ const App = () => {
 
   const qrCodeElem = Qrcode('');
   const copyInputElem = CopyInput('');
+  const messager = Messager(eventManager);
 
   const DomElement = html`<div class="app">
     <div class="not-connected hide">
-      <h1>Scan QR code</h1>
-      ${qrCodeElem}
-      <h2>Or</h2>
-      <h2>Copy to clipboard</h2>
-      ${copyInputElem}
+      <div class="info">
+        <h1>Peerqr.com</h1>
+        <h2>Get your unique link buy scanning the QR code or by clicking the copy button</h2>
+        <p></p>
+      </div>
+      <div class="card">
+        ${qrCodeElem}
+        ${copyInputElem}
+      </div>
     </div>
     <div class="connected hide">
-      ${DropFile(eventManager)}
-      <div class="received-files"></div>
+      ${messager}
+      <div class="files-sender">
+        ${DropFile(eventManager)}
+      </div>
     </div>
   </div>`;
   const notConnectedElem = $('.not-connected', DomElement);
   const connectedElem = $('.connected', DomElement);
-  const receivedFilesElem = $('.received-files', DomElement);
 
   const setConnected = (isConnected) => {
     if (isConnected === false) {
@@ -67,12 +71,12 @@ const App = () => {
     }
   };
 
-  peer.on('open', (id) => {
+  peer.on('open', async (id) => {
     const url = `${window.location.protocol}//${window.location.host}/${id}`;
-    qrCodeElem.setValue(url);
-    copyInputElem.setValue(url);
 
     setConnected(false);
+    copyInputElem.setValue(url);
+    qrCodeElem.setValue(url);
     if (window.location.pathname.length === 37) {
       const friendId = window.location.pathname.substring(1);
       const conn = peer.connect(friendId);
@@ -83,8 +87,17 @@ const App = () => {
             arrayBuffer: file,
             name: file.name,
           });
+          eventManager.emit('render-file', {
+            arrayBuffer: file.arrayBuffer(),
+            name: file.name,
+          });
         });
-        conn.on('data', (data) => handleData(data, receivedFilesElem, conn));
+
+        eventManager.subscribe('send-message', (message) => {
+          conn.send(message);
+        });
+
+        conn.on('data', (data) => handleData(data, eventManager, conn));
         conn.on('close', () => {
           setConnected(false);
         });
@@ -99,7 +112,10 @@ const App = () => {
           name: file.name,
         });
       });
-      conn.on('data', (data) => handleData(data, receivedFilesElem, conn));
+      eventManager.subscribe('send-message', (message) => {
+        conn.send(message);
+      });
+      conn.on('data', (data) => handleData(data, eventManager, conn));
 
       conn.on('close', () => {
         setConnected(false);
