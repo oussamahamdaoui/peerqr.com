@@ -38,6 +38,9 @@
         <h1><img src="logo.svg"> Peerqr.com</h1>
         <h2>Get your unique link by scanning the QR code or by clicking the copy button</h2>
         <p>Once you share this link with another device, you will have a secure P2P connection between those devices</p>
+        <a href="https://www.producthunt.com/posts/peerqr?utm_source=badge-featured&utm_medium=badge&utm_souce=badge-peerqr" target="_blank">
+          <img src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=269899&theme=dark" alt="peerqr - Scan/copy send | Product Hunt" style="width: 250px; height: 54px; margin-top:1em;" width="250" height="54" />
+        </a>
       </div>
       <div class="card">
         ${i}
