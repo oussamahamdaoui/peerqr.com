@@ -64,8 +64,8 @@ const App = () => {
     <div class="not-connected hide">
       <div class="info">
         <h1>Peerqr.com</h1>
-        <h2>Get your unique link buy scanning the QR code or by clicking the copy button</h2>
-        <p>Once you share this link with another device you will have a secure P2P connection between those devices</p>
+        <h2>Get your unique link by scanning the QR code or by clicking the copy button</h2>
+        <p>Once you share this link with another device, you will have a secure P2P connection between those devices</p>
       </div>
       <div class="card">
         ${qrCodeElem}
