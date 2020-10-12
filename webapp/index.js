@@ -2,7 +2,7 @@ const { html, $, EventManager } = require('@forgjs/noframework');
 
 // fixes safari issues
 
-(function () {
+(function init() {
   // eslint-disable-next-line no-use-before-define
   File.prototype.arrayBuffer = File.prototype.arrayBuffer || myArrayBuffer;
   // eslint-disable-next-line no-use-before-define
@@ -118,6 +118,12 @@ const App = () => {
           conn.send(message);
         });
 
+        eventManager.subscribe('im-typing', () => {
+          conn.send({
+            type: 'is-typing',
+          });
+        });
+
         conn.on('data', (data) => handleData(data, eventManager, conn));
         conn.on('close', () => {
           setConnected(false);
@@ -136,6 +142,13 @@ const App = () => {
       eventManager.subscribe('send-message', (message) => {
         conn.send(message);
       });
+
+      eventManager.subscribe('im-typing', () => {
+        conn.send({
+          type: 'is-typing',
+        });
+      });
+
       conn.on('data', (data) => handleData(data, eventManager, conn));
 
       conn.on('close', () => {

@@ -447,6 +447,7 @@ h2 {
     display: flex;
     flex-direction: column;
     padding: 0em;
+    padding-bottom: 50vh;
     padding-top: 1em;
     overflow-y: scroll;
     .message {
@@ -455,6 +456,18 @@ h2 {
       width: auto;
       border-bottom: 1px solid #58595c;
       color: white;
+      &.is-typing{
+        padding: 0;
+        .animated-icon{
+          color: white;
+          height: 50px;
+          width: 100px;
+          path{
+            fill:white;
+          }
+        }
+      }
+
       &.big{
         .data{
           font-size: 3em;

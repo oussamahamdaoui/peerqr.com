@@ -3,6 +3,7 @@ const FileType = require('file-type');
 const timeAgo = require('timeago.js');
 const FileElement = require('./FileElement');
 const Icon = require('./Icon');
+const AnimatedIcon = require('./AnimatedIcon');
 
 const EMOJI_REGEX = /(?:[\u2700-\u27bf]|(?:\ud83c[\udde6-\uddff]){2}|[\ud800-\udbff][\udc00-\udfff])[\ufe0e\ufe0f]?(?:[\u0300-\u036f\ufe20-\ufe23\u20d0-\u20f0]|\ud83c[\udffb-\udfff])?(?:\u200d(?:[^\ud800-\udfff]|(?:\ud83c[\udde6-\uddff]){2}|[\ud800-\udbff][\udc00-\udfff])[\ufe0e\ufe0f]?(?:[\u0300-\u036f\ufe20-\ufe23\u20d0-\u20f0]|\ud83c[\udffb-\udfff])?)*/g;
 function emojiUnicode(emoji) {
@@ -44,6 +45,23 @@ const Message = ({ message = '', from = 'me' } = {}) => {
   return DomElement;
 };
 
+const IsTyping = () => {
+  const icon = AnimatedIcon({
+    name: 'is-typing',
+    autoplay: true,
+    loop: true,
+  });
+  const DomElement = html`<div class="message is-typing">
+    ${icon}
+  </div>`;
+
+  setTimeout(() => {
+    DomElement.remove();
+  }, 1000);
+
+  return DomElement;
+};
+
 const Messager = (eventManager) => {
   const DomElement = html`
   <div class="messager">
@@ -63,10 +81,16 @@ const Messager = (eventManager) => {
     if (e.key === 'Enter' && $('textarea', DomElement).value.trim() !== '') {
       e.preventDefault();
       const message = $('textarea', DomElement).value.replace(EMOJI_REGEX, emojiUnicode);
-      messages.appendChild(Message({ message, from: 'me' }));
+      const messageElement = Message({ message, from: 'me' });
+      messages.appendChild(messageElement);
       eventManager.emit('send-message', {
         message,
       });
+      if (messageElement.scrollIntoView) {
+        messageElement.scrollIntoView({ behavior: 'smooth', block: 'end', inline: 'nearest' });
+      } else {
+        messages.scrollTop = messages.scrollHeight;
+      }
       $('textarea', DomElement).value = '';
       return;
     }
@@ -80,8 +104,16 @@ const Messager = (eventManager) => {
 
   $('button', DomElement).addEventListener('click', () => {
     if ($('textarea', DomElement).value.trim() === '') return;
+    const message = $('textarea', DomElement).value.replace(EMOJI_REGEX, emojiUnicode);
+    const messageElement = Message({ message, from: 'me' });
+    messages.appendChild(messageElement);
+    if (messageElement.scrollIntoView) {
+      messageElement.scrollIntoView({ behavior: 'smooth', block: 'end', inline: 'nearest' });
+    } else {
+      messages.scrollTop = messages.scrollHeight;
+    }
     eventManager.emit('send-message', {
-      message: $('textarea', DomElement).value.replace(EMOJI_REGEX, emojiUnicode),
+      message,
     });
     $('textarea', DomElement).value = '';
   });
@@ -95,11 +127,27 @@ const Messager = (eventManager) => {
   });
 
   eventManager.subscribe('file-received', async (props) => {
-    messages.appendChild(await FileElement(props));
+    const messageElement = await FileElement(props);
+    messages.appendChild(messageElement);
+    if (messageElement.scrollIntoView) {
+      messageElement.scrollIntoView({ behavior: 'smooth', block: 'end', inline: 'nearest' });
+    } else {
+      messages.scrollTop = messages.scrollHeight;
+    }
   });
 
-  eventManager.subscribe('message-received', ({ message }) => {
-    messages.appendChild(Message({ message, from: 'it' }));
+  eventManager.subscribe('message-received', ({ message, type }) => {
+    if (type === 'is-typing') {
+      messages.appendChild(IsTyping());
+    } else {
+      const messageElement = Message({ message, from: 'it' });
+      messages.appendChild(messageElement);
+      if (messageElement.scrollIntoView) {
+        messageElement.scrollIntoView({ behavior: 'smooth', block: 'end', inline: 'nearest' });
+      } else {
+        messages.scrollTop = messages.scrollHeight;
+      }
+    }
   });
 
   eventManager.subscribe('render-file', async (file) => {
