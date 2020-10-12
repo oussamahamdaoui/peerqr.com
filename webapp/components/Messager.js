@@ -151,6 +151,7 @@ const Messager = (eventManager) => {
   });
 
   eventManager.subscribe('render-file', async (file) => {
+    console.log('file-rendering');
     const { mime } = (await FileType.fromBuffer(await file.arrayBuffer));
     messages.appendChild(await FileElement({
       name: file.name,

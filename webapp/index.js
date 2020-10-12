@@ -108,6 +108,7 @@ const App = () => {
             arrayBuffer: file,
             name: file.name,
           });
+          console.log('render-file');
           eventManager.emit('render-file', {
             arrayBuffer: file.arrayBuffer(),
             name: file.name,
@@ -136,6 +137,10 @@ const App = () => {
       eventManager.subscribe('got-file', (file) => {
         conn.send({
           arrayBuffer: file,
+          name: file.name,
+        });
+        eventManager.emit('render-file', {
+          arrayBuffer: file.arrayBuffer(),
           name: file.name,
         });
       });
