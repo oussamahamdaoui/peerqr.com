@@ -63,7 +63,7 @@ const App = () => {
   const DomElement = html`<div class="app">
     <div class="not-connected hide">
       <div class="info">
-        <h1>Peerqr.com</h1>
+        <h1><img src="logo.svg"> Peerqr.com</h1>
         <h2>Get your unique link by scanning the QR code or by clicking the copy button</h2>
         <p>Once you share this link with another device, you will have a secure P2P connection between those devices</p>
       </div>
